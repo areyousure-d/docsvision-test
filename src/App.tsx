@@ -1,26 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+
+import { firebase } from "./firebase";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("places")
+      .get()
+      .then((res) => {
+        let docs = res.docs.map((x) => ({
+          id: x.id,
+          data: x.data() && x.data(),
+          parts: x.data().parts && x.data().parts.map((x: any) => x.id),
+        }));
+        console.info(docs);
+      });
+  }, []);
+
+  return <div>app</div>;
 }
 
 export default App;
