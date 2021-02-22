@@ -6,10 +6,12 @@ import {
   SET_PLACES_LOADING_ERROR,
   SET_INVENTORIES_LOADING,
   SET_INVENTORIES_LOADING_ERROR,
+  SET_CURRENT_PLACE_ID,
 } from "../actions/actionTypes";
 import { InventoryType } from "../actions/placeActions";
 
 type PlaceReducerType = {
+  currentPlaceId: string;
   placesTree: NodeType | null;
   isPlacesLoading: boolean;
   isPlacesLoadingError: boolean;
@@ -19,6 +21,7 @@ type PlaceReducerType = {
 };
 
 const initialState: PlaceReducerType = {
+  currentPlaceId: "buildings",
   placesTree: null,
   isPlacesLoading: false,
   isPlacesLoadingError: false,
@@ -44,6 +47,8 @@ export const placeReducer = (
       return { ...state, isInventoriesLoading: action.payload };
     case SET_INVENTORIES_LOADING_ERROR:
       return { ...state, isInventoriesLoadingError: action.payload };
+    case SET_CURRENT_PLACE_ID:
+      return { ...state, currentPlaceId: action.payload };
     default:
       return state;
   }

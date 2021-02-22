@@ -5,6 +5,7 @@ import {
   SET_PLACES_LOADING_ERROR,
   SET_INVENTORIES_LOADING,
   SET_INVENTORIES_LOADING_ERROR,
+  SET_CURRENT_PLACE_ID,
 } from "./actionTypes";
 import { PlaceType, addToTree } from "../../../lib/addToTree";
 import { NodeType, Tree } from "../../../lib/tree";
@@ -13,6 +14,8 @@ import { RootStateType } from "../reducers";
 import { Dispatch } from "redux";
 import { getPlaces } from "../../../api/places";
 import { getInventories } from "../../../api/inventories";
+
+// todo: need to refactoring
 
 type PlacesTreeType = {
   type: typeof SET_PLACES_TREE;
@@ -135,3 +138,13 @@ export const fetchInventories = (): ThunkAction<
     })
     .catch(() => dispatch(setInventoriesLoadingError(true)));
 };
+
+type CurrentPlaceIdType = {
+  type: typeof SET_CURRENT_PLACE_ID;
+  payload: string;
+};
+
+export const setCurrentPlaceId = (id: string): CurrentPlaceIdType => ({
+  type: SET_CURRENT_PLACE_ID,
+  payload: id,
+});

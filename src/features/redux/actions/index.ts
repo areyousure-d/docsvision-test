@@ -5,4 +5,7 @@ export {
   setInventories,
   setInventoriesLoading,
   setInventoriesLoadingError,
+  fetchPlaces,
+  fetchInventories,
+  setCurrentPlaceId,
 } from "./placeActions";

@@ -6,18 +6,20 @@ export const getInventories = async () => {
   const data = await db.collection("inventory").get();
 
   const inventories = data.docs.map((doc) => ({
-    id: doc.id,
+    id: doc.id && doc.id,
     name: doc.data && doc.data().name,
     count: doc.data && doc.data().count,
-    placeId: doc.data && doc.data().place.id,
+    placeId: doc.data && doc.data().place && doc.data().place.id,
   }));
 
   return filterInventories(inventories);
 };
 
+/*
 export const getInventories2 = async () => {
   const db = firebase.firestore();
   const data = await db.collection("inventory").get();
+
   const inventories = data.docs.map((doc) => ({
     id: doc.id && doc.id,
     data: doc.data && doc.data(),
@@ -28,3 +30,4 @@ export const getInventories2 = async () => {
 
   return inventories;
 };
+*/
