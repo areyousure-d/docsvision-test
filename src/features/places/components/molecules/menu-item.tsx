@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -13,7 +13,12 @@ import {
   AccordionIcon,
   Box,
 } from "@chakra-ui/react";
+import { CheckIcon } from "@chakra-ui/icons";
+
 import { RootStateType } from "../../../redux/reducers";
+import { InventoryType } from "../../../redux/actions/placeActions";
+
+import { findChildrenIds } from "../../../../lib/placeTree-helpers";
 
 type Props = {
   placeId: string;
@@ -24,9 +29,24 @@ type Props = {
 export const MenuItem: FC<Props> = ({ placeId, title, children }) => {
   const dispatch = useDispatch();
 
-  const currentPlaceId = useSelector(
-    (state: RootStateType) => state.placeReducer.currentPlaceId
+  const [hasInventory, setHasInventory] = useState<boolean>(false);
+
+  const { currentPlaceId, inventories, placesTree } = useSelector(
+    (state: RootStateType) => state.placeReducer
   );
+
+  useEffect(() => {
+    const childrenIds = findChildrenIds(placeId, placesTree);
+
+    let hasInventory = false;
+    inventories.forEach((inventory: InventoryType) => {
+      if (childrenIds.includes(inventory.placeId)) {
+        hasInventory = true;
+      }
+    });
+
+    setHasInventory(hasInventory);
+  }, [inventories, placeId, placesTree]);
 
   const isSelected = placeId === currentPlaceId;
 
@@ -50,7 +70,7 @@ export const MenuItem: FC<Props> = ({ placeId, title, children }) => {
             }}
           >
             <Box flex="1" textAlign="left" p="0" pl="5px">
-              {title}
+              {title} {hasInventory && <CheckIcon color="green.800" />}
             </Box>
             <AccordionIcon />
           </AccordionButton>

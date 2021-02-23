@@ -14,7 +14,7 @@ export const BasicTemplate: FC<Props> = ({ left, right }) => {
     <Flex
       margin="0 auto"
       minH="100vh"
-      maxW="1024px"
+      maxW="1400px"
       minW="720px"
       flexDirection="column"
       justifyContent="space-between"

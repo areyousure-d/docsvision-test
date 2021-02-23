@@ -1,13 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
   setCurrentPlaceId,
   setIsCurrentPlaceLast,
 } from "../../../redux/actions";
+import { CheckIcon } from "@chakra-ui/icons";
 
 import { Box } from "@chakra-ui/react";
 import { RootStateType } from "../../../redux/reducers";
+import { InventoryType } from "../../../redux/actions/placeActions";
 
 type Props = {
   id: string;
@@ -17,9 +19,26 @@ type Props = {
 export const EmptyMenuItem: FC<Props> = ({ id, name }) => {
   const dispatch = useDispatch();
 
+  const [hasInventory, setHasInventory] = useState<boolean>(false);
+
   const currentPlaceId = useSelector(
     (state: RootStateType) => state.placeReducer.currentPlaceId
   );
+
+  const inventories = useSelector(
+    (state: RootStateType) => state.placeReducer.inventories
+  );
+
+  useEffect(() => {
+    let hasInventory = false;
+    inventories.forEach((inventory: InventoryType) => {
+      if (inventory.placeId === id) {
+        hasInventory = true;
+      }
+    });
+
+    setHasInventory(hasInventory);
+  }, [inventories, id]);
 
   const onClick = () => {
     dispatch(setCurrentPlaceId(id));
@@ -45,7 +64,7 @@ export const EmptyMenuItem: FC<Props> = ({ id, name }) => {
         transition: "background .2s",
       }}
     >
-      {name}
+      {name} {hasInventory && <CheckIcon color="green.800" />}
     </Box>
   );
 };
