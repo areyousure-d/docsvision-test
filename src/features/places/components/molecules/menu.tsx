@@ -31,9 +31,13 @@ export const Menu: FC = () => {
 function getMenuItems(node: NodeType): JSX.Element {
   const item =
     node.parts.length > 0 ? (
-      <MenuItem key={node.id} placeId={node.id} title={node.name}>
-        {node.parts.map((part: NodeType) => getMenuItems(part))}
-      </MenuItem>
+      node.id === "buildings" ? (
+        <>{node.parts.map((part: NodeType) => getMenuItems(part))}</>
+      ) : (
+        <MenuItem key={node.id} placeId={node.id} title={node.name}>
+          {node.parts.map((part: NodeType) => getMenuItems(part))}
+        </MenuItem>
+      )
     ) : (
       <EmptyMenuItem key={node.id} id={node.id} name={node.name} />
     );
