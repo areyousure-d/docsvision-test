@@ -21,7 +21,7 @@ type PlaceReducerType = {
 };
 
 const initialState: PlaceReducerType = {
-  currentPlaceId: "buildings",
+  currentPlaceId: "",
   placesTree: null,
   isPlacesLoading: false,
   isPlacesLoadingError: false,
