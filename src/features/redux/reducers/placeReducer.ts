@@ -7,10 +7,13 @@ import {
   SET_INVENTORIES_LOADING,
   SET_INVENTORIES_LOADING_ERROR,
   SET_CURRENT_PLACE_ID,
+  SET_IS_CURRENT_PLACE_LAST,
+  REFETCH,
 } from "../actions/actionTypes";
 import { InventoryType } from "../actions/placeActions";
 
 type PlaceReducerType = {
+  isCurrentPlaceLast: boolean;
   currentPlaceId: string;
   placesTree: NodeType | null;
   isPlacesLoading: boolean;
@@ -18,16 +21,19 @@ type PlaceReducerType = {
   inventories: InventoryType[];
   isInventoriesLoading: boolean;
   isInventoriesLoadingError: boolean;
+  shouldRefetch: boolean;
 };
 
 const initialState: PlaceReducerType = {
+  isCurrentPlaceLast: false,
   currentPlaceId: "",
-  placesTree: null,
+  placesTree: { id: "buildings", name: "Все здания", parts: [] },
   isPlacesLoading: false,
   isPlacesLoadingError: false,
   inventories: [],
   isInventoriesLoading: false,
   isInventoriesLoadingError: false,
+  shouldRefetch: false,
 };
 
 export const placeReducer = (
@@ -49,6 +55,10 @@ export const placeReducer = (
       return { ...state, isInventoriesLoadingError: action.payload };
     case SET_CURRENT_PLACE_ID:
       return { ...state, currentPlaceId: action.payload };
+    case SET_IS_CURRENT_PLACE_LAST:
+      return { ...state, isCurrentPlaceLast: action.payload };
+    case REFETCH:
+      return { ...state, shouldRefetch: !state.shouldRefetch };
     default:
       return state;
   }

@@ -8,4 +8,6 @@ export {
   fetchPlaces,
   fetchInventories,
   setCurrentPlaceId,
+  setIsCurrentPlaceLast,
+  refetch,
 } from "./placeActions";

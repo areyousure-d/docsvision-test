@@ -1,7 +1,10 @@
 import React, { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setCurrentPlaceId } from "../../../redux/actions";
+import {
+  setCurrentPlaceId,
+  setIsCurrentPlaceLast,
+} from "../../../redux/actions";
 
 import { Box } from "@chakra-ui/react";
 import { RootStateType } from "../../../redux/reducers";
@@ -20,6 +23,7 @@ export const EmptyMenuItem: FC<Props> = ({ id, name }) => {
 
   const onClick = () => {
     dispatch(setCurrentPlaceId(id));
+    dispatch(setIsCurrentPlaceLast(true));
   };
 
   const isSelected = id === currentPlaceId;

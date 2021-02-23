@@ -1,0 +1,1 @@
+export { Inventories } from "./inventories";

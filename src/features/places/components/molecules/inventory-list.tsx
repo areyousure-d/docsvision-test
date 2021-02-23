@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import { UnorderedList } from "@chakra-ui/react";
+import { List } from "@chakra-ui/react";
 
 import { InventoryListItem } from "../atoms";
 import { LoadingSpinner } from "../../../../ui";
@@ -10,7 +10,15 @@ import { InventoryType } from "../../../redux/actions/placeActions";
 import { NodeType } from "../../../../lib/tree";
 import { findChildrenIds } from "../../../../lib/placeTree-helpers";
 
-export const InventoryList: FC = () => {
+type Props = {
+  onEditModalOpen: (id: string, name: string, count: number) => void;
+  onDeleteModalOpen: (id: string, name: string) => void;
+};
+
+export const InventoryList: FC<Props> = ({
+  onEditModalOpen,
+  onDeleteModalOpen,
+}) => {
   const [currentPlaceChildrenIds, setCurrentPlaceChildrenIds] = useState<
     string[]
   >([]);
@@ -25,7 +33,7 @@ export const InventoryList: FC = () => {
   useEffect(() => {
     const ids = findChildrenIds(currentPlaceId, placesTree);
     setCurrentPlaceChildrenIds(ids);
-  }, [currentPlaceId]);
+  }, [currentPlaceId, placesTree]);
 
   const filteredInventories = inventories.filter((inventory: InventoryType) => {
     if (currentPlaceId === "buildings") return true;
@@ -35,14 +43,17 @@ export const InventoryList: FC = () => {
   if (isInventoriesLoading) return <LoadingSpinner />;
 
   return (
-    <UnorderedList>
+    <List>
       {filteredInventories.map((inventory: InventoryType) => (
         <InventoryListItem
           key={inventory.id}
+          id={inventory.id}
           name={inventory.name}
           count={inventory.count}
+          onEditModalOpen={onEditModalOpen}
+          onDeleteModalOpen={onDeleteModalOpen}
         />
       ))}
-    </UnorderedList>
+    </List>
   );
 };

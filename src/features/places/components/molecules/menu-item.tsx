@@ -1,7 +1,10 @@
 import React, { FC, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setCurrentPlaceId } from "../../../redux/actions";
+import {
+  setCurrentPlaceId,
+  setIsCurrentPlaceLast,
+} from "../../../redux/actions";
 
 import {
   AccordionButton,
@@ -29,6 +32,7 @@ export const MenuItem: FC<Props> = ({ placeId, title, children }) => {
 
   const onClick = () => {
     dispatch(setCurrentPlaceId(placeId));
+    dispatch(setIsCurrentPlaceLast(false));
   };
 
   return (

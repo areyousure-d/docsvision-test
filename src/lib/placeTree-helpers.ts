@@ -1,12 +1,12 @@
 import { NodeType } from "./tree";
 
 export function findChildrenIds(currentId: string, root: NodeType): string[] {
-  const isParent = false;
+  // const isParent = false;
   const ids: string[] = [];
 
   const targetNode = findBFS(currentId, root);
 
-  traverseBFS(targetNode || root, (node) => {
+  traverseBFS(targetNode, (node) => {
     ids.push(node.id);
   });
 

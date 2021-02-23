@@ -6,6 +6,8 @@ import {
   SET_INVENTORIES_LOADING,
   SET_INVENTORIES_LOADING_ERROR,
   SET_CURRENT_PLACE_ID,
+  SET_IS_CURRENT_PLACE_LAST,
+  REFETCH,
 } from "./actionTypes";
 import { PlaceType, addToTree } from "../../../lib/addToTree";
 import { NodeType, Tree } from "../../../lib/tree";
@@ -147,4 +149,24 @@ type CurrentPlaceIdType = {
 export const setCurrentPlaceId = (id: string): CurrentPlaceIdType => ({
   type: SET_CURRENT_PLACE_ID,
   payload: id,
+});
+
+type SetIsCurrentPlaceLastType = {
+  type: typeof SET_IS_CURRENT_PLACE_LAST;
+  payload: boolean;
+};
+
+export const setIsCurrentPlaceLast = (
+  isLast: boolean
+): SetIsCurrentPlaceLastType => ({
+  type: SET_IS_CURRENT_PLACE_LAST,
+  payload: isLast,
+});
+
+type RefetchType = {
+  type: typeof REFETCH;
+};
+
+export const refetch = (): RefetchType => ({
+  type: REFETCH,
 });

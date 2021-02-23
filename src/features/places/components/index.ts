@@ -1,1 +1,8 @@
-export { Menu, InventoryList } from "./molecules";
+export {
+  Menu,
+  InventoryList,
+  AddModal,
+  EditModal,
+  DeleteModal,
+} from "./molecules";
+export { Inventories } from "./organisms";

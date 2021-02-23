@@ -15,6 +15,44 @@ export const getInventories = async () => {
   return filterInventories(inventories);
 };
 
+export const addInventory = async (
+  name: string,
+  count: number,
+  placeId: string
+) => {
+  const db = firebase.firestore();
+  const response = await db
+    .collection("inventory")
+    .doc()
+    .set({
+      name,
+      count,
+      place: db.collection("places").doc(placeId),
+    });
+
+  return response;
+};
+
+export const deleteInventory = async (inventoryId: string) => {
+  const db = firebase.firestore();
+  const response = await db.collection("inventory").doc(inventoryId).delete();
+
+  return response;
+};
+
+export const editInventory = async (
+  inventoryId: string,
+  newInventory: { name?: string; count?: number }
+) => {
+  const db = firebase.firestore();
+  const response = await db
+    .collection("inventory")
+    .doc(inventoryId)
+    .update({ ...newInventory });
+
+  return response;
+};
+
 /*
 export const getInventories2 = async () => {
   const db = firebase.firestore();
