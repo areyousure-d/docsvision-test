@@ -14,11 +14,7 @@ export type PlacesStore = {
   isCurrentPlaceLast: boolean;
   currentPlaceId: string;
   placesTree: TreeNode;
-  isPlacesLoading: boolean;
-  isPlacesLoadingError: boolean;
   inventories: Inventory[];
-  isInventoriesLoading: boolean;
-  isInventoriesLoadingError: boolean;
 };
 
 export type Inventory = {

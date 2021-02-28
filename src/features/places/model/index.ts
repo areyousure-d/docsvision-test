@@ -1,10 +1,4 @@
-import {
-  combine,
-  createEffect,
-  createEvent,
-  createStore,
-  restore,
-} from "effector";
+import { createEffect, createEvent, createStore } from "effector";
 
 import { getPlaces } from "../../../api/places";
 import {
@@ -14,10 +8,7 @@ import {
   editInventory,
 } from "../../../api/inventories";
 
-import { Tree } from "../../../lib/tree";
-import { addToTree } from "../../../lib/addToTree";
-
-import { Place, PlacesStore, Inventory } from "../types";
+import { PlacesStore } from "../types";
 
 //store
 // isCurrentPlaceLast - чтобы показать кнопки редактирования
@@ -25,11 +16,7 @@ export const $places = createStore<PlacesStore>({
   isCurrentPlaceLast: false,
   currentPlaceId: "",
   placesTree: { id: "buildings", name: "Все здания", parts: [] },
-  isPlacesLoading: false,
-  isPlacesLoadingError: false,
   inventories: [],
-  isInventoriesLoading: false,
-  isInventoriesLoadingError: false,
 });
 
 // EFFECTS
