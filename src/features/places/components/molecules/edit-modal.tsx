@@ -1,5 +1,5 @@
 import React, { FC, FormEvent, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useStore } from "effector-react";
 
 import {
   Modal,
@@ -16,10 +16,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { editInventory } from "../../../../api/inventories";
-import { refetch } from "../../../redux/actions";
-
 import { ValidationAlert } from "../../../../ui";
+
+import { editInventoryFx } from "../../model";
 
 type Props = {
   isOpen: boolean;
@@ -36,13 +35,14 @@ export const EditModal: FC<Props> = ({
   editModalName,
   editModalCount,
 }) => {
-  const dispatch = useDispatch();
   const toast = useToast();
 
   const [name, setName] = useState<string>(editModalName);
   const [nameRequiredError, setNameRequiredError] = useState<boolean>(false);
   const [count, setCount] = useState<number>(editModalCount);
   const [countRequiredError, setCountRequiredError] = useState<boolean>(false);
+  const [negativeCountError, setNegativeCountError] = useState<boolean>(false);
+  const [tooBigCountError, setTooBigCountError] = useState<boolean>(false);
 
   useEffect(() => {
     setName(editModalName);
@@ -57,6 +57,8 @@ export const EditModal: FC<Props> = ({
   const onCountChange = (e: FormEvent<HTMLInputElement>) => {
     setCount(Number(e.currentTarget.value));
     setCountRequiredError(false);
+    setNegativeCountError(false);
+    setTooBigCountError(false);
   };
 
   const onSave = () => {
@@ -66,7 +68,13 @@ export const EditModal: FC<Props> = ({
     if (count === 0) {
       setCountRequiredError(true);
     }
-    if (name === "" || count === 0) {
+    if (count < 0) {
+      setNegativeCountError(true);
+    }
+    if (count > 1000) {
+      setTooBigCountError(true);
+    }
+    if (name === "" || count === 0 || count < 0 || count > 1000) {
       return;
     }
 
@@ -75,28 +83,31 @@ export const EditModal: FC<Props> = ({
       count,
     };
 
-    editInventory(editModalId, newInventory)
-      .then(() => {
-        dispatch(refetch());
-        onClose();
-        toast({
-          title: "Редактирование.",
-          description: "Оборудование успешно отредактировано.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      })
-      .catch(() => {
-        onClose();
-        toast({
-          title: "Редактирование.",
-          description: "Не удалось отредактировать оборудование.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+    editInventoryFx({ inventoryId: editModalId, newInventory: newInventory });
+
+    const unwatchDone = editInventoryFx.done.watch(() => {
+      onClose();
+      toast({
+        title: "Редактирование.",
+        description: "Оборудование успешно отредактировано.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
       });
+      unwatchDone();
+    });
+
+    const unwatchFail = editInventoryFx.fail.watch(() => {
+      onClose();
+      toast({
+        title: "Редактирование.",
+        description: "Не удалось отредактировать оборудование.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      unwatchFail();
+    });
   };
 
   return (
@@ -137,11 +148,31 @@ export const EditModal: FC<Props> = ({
                 onClose={() => setCountRequiredError(false)}
               />
             )}
+            {negativeCountError && (
+              <ValidationAlert
+                title="Ошибка!"
+                text="Не может быть отрицательным."
+                onClose={() => setNegativeCountError(false)}
+              />
+            )}
+            {tooBigCountError && (
+              <ValidationAlert
+                title="Ошибка!"
+                text="Слишком много."
+                onClose={() => setTooBigCountError(false)}
+              />
+            )}
           </FormControl>
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onSave}>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={onSave}
+            isLoading={useStore(editInventoryFx.pending)}
+            loadingText="Изменение"
+          >
             Изменить
           </Button>
           <Button onClick={onClose}>Отмена</Button>

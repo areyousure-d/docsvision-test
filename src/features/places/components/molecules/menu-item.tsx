@@ -1,10 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import {
-  setCurrentPlaceId,
-  setIsCurrentPlaceLast,
-} from "../../../redux/actions";
+import { useStore } from "effector-react";
 
 import {
   AccordionButton,
@@ -15,10 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 
-import { RootStateType } from "../../../redux/reducers";
-import { InventoryType } from "../../../redux/actions/placeActions";
+import { Inventory } from "../../types";
 
 import { findChildrenIds } from "../../../../lib/placeTree-helpers";
+
+import { $places, setCurrentPlaceId, setIsCurrentPlaceLast } from "../../model";
 
 type Props = {
   placeId: string;
@@ -27,19 +23,18 @@ type Props = {
 };
 
 export const MenuItem: FC<Props> = ({ placeId, title, children }) => {
-  const dispatch = useDispatch();
-
   const [hasInventory, setHasInventory] = useState<boolean>(false);
 
-  const { currentPlaceId, inventories, placesTree } = useSelector(
-    (state: RootStateType) => state.placeReducer
+  const { currentPlaceId, inventories, placesTree } = useStore($places);
+  const [isSelected, setIsSelected] = useState<boolean>(
+    placeId === currentPlaceId
   );
 
   useEffect(() => {
     const childrenIds = findChildrenIds(placeId, placesTree);
 
     let hasInventory = false;
-    inventories.forEach((inventory: InventoryType) => {
+    inventories.forEach((inventory: Inventory) => {
       if (childrenIds.includes(inventory.placeId)) {
         hasInventory = true;
       }
@@ -48,11 +43,13 @@ export const MenuItem: FC<Props> = ({ placeId, title, children }) => {
     setHasInventory(hasInventory);
   }, [inventories, placeId, placesTree]);
 
-  const isSelected = placeId === currentPlaceId;
+  useEffect(() => {
+    setIsSelected(currentPlaceId === placeId);
+  }, [currentPlaceId, placeId]);
 
   const onClick = () => {
-    dispatch(setCurrentPlaceId(placeId));
-    dispatch(setIsCurrentPlaceLast(false));
+    setCurrentPlaceId(placeId);
+    setIsCurrentPlaceLast(false);
   };
 
   return (

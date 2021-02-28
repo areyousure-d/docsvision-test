@@ -9,5 +9,6 @@ export const getPlaces = async () => {
     name: doc.data().name,
     parts: doc.data().parts && doc.data().parts.map((part: any) => part.id),
   }));
+
   return places;
 };

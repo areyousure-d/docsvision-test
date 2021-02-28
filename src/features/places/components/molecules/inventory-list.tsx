@@ -1,14 +1,14 @@
 import React, { FC, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useStore } from "effector-react";
 
 import { List } from "@chakra-ui/react";
 
 import { InventoryListItem } from "../atoms";
 import { LoadingSpinner } from "../../../../ui";
-import { RootStateType } from "../../../redux/reducers";
-import { InventoryType } from "../../../redux/actions/placeActions";
-import { NodeType } from "../../../../lib/tree";
+import { Inventory } from "../../types";
 import { findChildrenIds } from "../../../../lib/placeTree-helpers";
+
+import { $places, fetchInventoriesFx } from "../../model";
 
 type Props = {
   onEditModalOpen: (id: string, name: string, count: number) => void;
@@ -23,28 +23,29 @@ export const InventoryList: FC<Props> = ({
     string[]
   >([]);
 
-  const {
-    inventories,
-    currentPlaceId,
-    placesTree,
-    isInventoriesLoading,
-  } = useSelector((state: RootStateType) => state.placeReducer);
+  const { inventories, currentPlaceId, placesTree } = useStore($places);
+
+  useEffect(() => {
+    fetchInventoriesFx();
+  }, []);
 
   useEffect(() => {
     const ids = findChildrenIds(currentPlaceId, placesTree);
     setCurrentPlaceChildrenIds(ids);
   }, [currentPlaceId, placesTree]);
 
-  const filteredInventories = inventories.filter((inventory: InventoryType) => {
+  const filteredInventories = inventories.filter((inventory: Inventory) => {
     if (currentPlaceId === "buildings") return true;
     return currentPlaceChildrenIds.includes(inventory.placeId);
   });
+
+  const isInventoriesLoading = useStore(fetchInventoriesFx.pending);
 
   if (isInventoriesLoading) return <LoadingSpinner />;
 
   return (
     <List>
-      {filteredInventories.map((inventory: InventoryType) => (
+      {filteredInventories.map((inventory: Inventory) => (
         <InventoryListItem
           key={inventory.id}
           id={inventory.id}

@@ -1,21 +1,22 @@
 import React, { FC, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useStore } from "effector-react";
 
 import { Accordion } from "@chakra-ui/react";
-
-import { RootStateType } from "../../../redux/reducers";
 
 import { LoadingSpinner } from "../../../../ui";
 import { NodeType } from "../../../../lib/tree";
 import { MenuItem, EmptyMenuItem } from "./";
 
+import { $places, fetchPlacesFx } from "../../model";
+
 export const Menu: FC = () => {
-  const {
-    placesTree,
-    isPlacesLoading,
-    isPlacesLoadingError,
-    currentPlaceId,
-  } = useSelector((state: RootStateType) => state.placeReducer);
+  const { placesTree } = useStore($places);
+
+  let isPlacesLoading = useStore(fetchPlacesFx.pending);
+
+  useEffect(() => {
+    fetchPlacesFx();
+  }, []);
 
   if (isPlacesLoading) {
     return <LoadingSpinner />;

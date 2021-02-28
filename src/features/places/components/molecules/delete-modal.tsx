@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { useDispatch } from "react-redux";
+import { useStore } from "effector-react";
 
 import {
   Modal,
@@ -14,8 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { deleteInventory } from "../../../../api/inventories";
-import { refetch } from "../../../redux/actions";
+import { deleteInventoryFx } from "../../model";
 
 type Props = {
   isOpen: boolean;
@@ -30,32 +29,34 @@ export const DeleteModal: FC<Props> = ({
   deleteModalId,
   deleteModalName,
 }) => {
-  const dispatch = useDispatch();
   const toast = useToast();
 
   const onDelete = () => {
-    deleteInventory(deleteModalId)
-      .then(() => {
-        dispatch(refetch());
-        onClose();
-        toast({
-          title: "Удаление.",
-          description: "Оборудование успешно удалено.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      })
-      .catch(() => {
-        onClose();
-        toast({
-          title: "Удаление.",
-          description: "Не удалось удалить оборудование.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+    deleteInventoryFx({ inventoryId: deleteModalId });
+
+    const unwatchDone = deleteInventoryFx.done.watch(() => {
+      onClose();
+      toast({
+        title: "Удаление.",
+        description: "Оборудование успешно удалено.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
       });
+      unwatchDone();
+    });
+
+    const unwatchFail = deleteInventoryFx.fail.watch(() => {
+      onClose();
+      toast({
+        title: "Удаление.",
+        description: "Не удалось удалить оборудование.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      unwatchFail();
+    });
   };
 
   return (
@@ -72,7 +73,12 @@ export const DeleteModal: FC<Props> = ({
           <Button colorScheme="blue" mr={3} onClick={onClose}>
             Отмена
           </Button>
-          <Button colorScheme="red" onClick={onDelete}>
+          <Button
+            colorScheme="red"
+            onClick={onDelete}
+            isLoading={useStore(deleteInventoryFx.pending)}
+            loadingText="Удаление"
+          >
             Удалить
           </Button>
         </ModalFooter>

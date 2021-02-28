@@ -1,7 +1,7 @@
-import { InventoryType } from "../features/redux/actions/placeActions";
+import { Inventory } from "../features/places/types";
 
-export function filterInventories(inventories: InventoryType[]) {
-  const filteredInventories = inventories.filter((inventory: InventoryType) => {
+export function filterInventories(inventories: Inventory[]) {
+  const filteredInventories = inventories.filter((inventory: Inventory) => {
     if (
       inventory.id === undefined ||
       inventory.name === undefined ||

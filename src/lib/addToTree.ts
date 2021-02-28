@@ -13,7 +13,6 @@ export function addToTree(
   toNodeId?: string
 ) {
   if (tree.findBFS(doc.id)) {
-    //console.log("tree.findBFS(doc.id)", tree.findBFS(doc.id));
     return;
   }
   tree.add(doc.id, doc.name, toNodeId);
@@ -21,13 +20,9 @@ export function addToTree(
   const currentId = doc.id;
 
   if (doc.parts && doc.parts.length > 0) {
-    //console.log("doc.parts: ", doc.parts);
     doc.parts.forEach((id: string) => {
       const index = docs.findIndex((doc: PlaceType) => doc.id === id);
       const currentDoc = docs[index];
-      //console.log("currentDoc: ", currentDoc);
-      //console.log("id:", id);
-      //console.log("currentId: ", currentId);
       addToTree(tree, docs, currentDoc, currentId);
     });
   }

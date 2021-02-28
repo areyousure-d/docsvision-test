@@ -1,15 +1,14 @@
 import React, { FC, useState } from "react";
-import { useSelector } from "react-redux";
+import { useStore } from "effector-react";
 
 import { Box, Heading, Flex, Button } from "@chakra-ui/react";
 
 import { InventoryList, AddModal, EditModal, DeleteModal } from "../";
-import { RootStateType } from "../../../redux/reducers";
+
+import { $places } from "../../model";
 
 export const Inventories: FC = () => {
-  const { isCurrentPlaceLast, currentPlaceId } = useSelector(
-    (state: RootStateType) => state.placeReducer
-  );
+  const { isCurrentPlaceLast, currentPlaceId } = useStore($places);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);

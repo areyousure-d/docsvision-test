@@ -1,15 +1,12 @@
 import React, { FC, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useStore } from "effector-react";
 
-import {
-  setCurrentPlaceId,
-  setIsCurrentPlaceLast,
-} from "../../../redux/actions";
 import { CheckIcon } from "@chakra-ui/icons";
 
 import { Box } from "@chakra-ui/react";
-import { RootStateType } from "../../../redux/reducers";
-import { InventoryType } from "../../../redux/actions/placeActions";
+import { Inventory } from "../../types";
+
+import { $places, setCurrentPlaceId, setIsCurrentPlaceLast } from "../../model";
 
 type Props = {
   id: string;
@@ -17,21 +14,14 @@ type Props = {
 };
 
 export const EmptyMenuItem: FC<Props> = ({ id, name }) => {
-  const dispatch = useDispatch();
-
   const [hasInventory, setHasInventory] = useState<boolean>(false);
 
-  const currentPlaceId = useSelector(
-    (state: RootStateType) => state.placeReducer.currentPlaceId
-  );
-
-  const inventories = useSelector(
-    (state: RootStateType) => state.placeReducer.inventories
-  );
+  const { currentPlaceId, inventories } = useStore($places);
+  const [isSelected, setIsSelected] = useState<boolean>(currentPlaceId === id);
 
   useEffect(() => {
     let hasInventory = false;
-    inventories.forEach((inventory: InventoryType) => {
+    inventories.forEach((inventory: Inventory) => {
       if (inventory.placeId === id) {
         hasInventory = true;
       }
@@ -40,12 +30,14 @@ export const EmptyMenuItem: FC<Props> = ({ id, name }) => {
     setHasInventory(hasInventory);
   }, [inventories, id]);
 
-  const onClick = () => {
-    dispatch(setCurrentPlaceId(id));
-    dispatch(setIsCurrentPlaceLast(true));
-  };
+  useEffect(() => {
+    setIsSelected(currentPlaceId === id);
+  }, [currentPlaceId, id]);
 
-  const isSelected = id === currentPlaceId;
+  const onClick = () => {
+    setCurrentPlaceId(id);
+    setIsCurrentPlaceLast(true);
+  };
 
   return (
     <Box

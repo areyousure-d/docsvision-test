@@ -1,9 +1,10 @@
 import React, { FC } from "react";
-import { useSelector } from "react-redux";
+import { useStore } from "effector-react";
 
 import { ListItem, Box } from "@chakra-ui/react";
 import { ListButton } from "../../../../ui";
-import { RootStateType } from "../../../redux/reducers";
+
+import { $places } from "../../model";
 
 type Props = {
   id: string;
@@ -20,9 +21,7 @@ export const InventoryListItem: FC<Props> = ({
   onEditModalOpen,
   onDeleteModalOpen,
 }) => {
-  const isCurrentPlaceLast = useSelector(
-    (state: RootStateType) => state.placeReducer.isCurrentPlaceLast
-  );
+  const { isCurrentPlaceLast } = useStore($places);
 
   return (
     <ListItem

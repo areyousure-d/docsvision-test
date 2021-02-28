@@ -1,7 +1,7 @@
 import { NodeType } from "./tree";
+import { TreeNode } from "../features/places/types";
 
-export function findChildrenIds(currentId: string, root: NodeType): string[] {
-  // const isParent = false;
+export function findChildrenIds(currentId: string, root: TreeNode): string[] {
   const ids: string[] = [];
 
   const targetNode = findBFS(currentId, root);
