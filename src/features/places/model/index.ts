@@ -69,11 +69,3 @@ export const editInventoryFx = createEffect(
 export const setCurrentPlaceId = createEvent<string>();
 
 export const setIsCurrentPlaceLast = createEvent<boolean>();
-
-export const setIsPlacesLoading = createEvent<boolean>();
-
-export const setIsPlacesLoadingError = createEvent<boolean>();
-
-export const setIsInventoriesLoading = createEvent<boolean>();
-
-export const setIsInventoriesLoadingError = createEvent<boolean>();

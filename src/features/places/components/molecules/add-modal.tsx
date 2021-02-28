@@ -68,7 +68,6 @@ export const AddModal: FC<Props> = ({ isOpen, onClose, currentPlaceId }) => {
     addInventoryFx({ name, count, placeId: currentPlaceId });
 
     const unwatchDone = addInventoryFx.done.watch(() => {
-      console.log("addInventoryFx.done");
       setCount(0);
       setName("");
       onClose();
